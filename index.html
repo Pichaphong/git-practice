@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Landing Page</title>
-    <!-- ใช้ Tailwind CSS เพื่อความรวดเร็วและทันสมัย -->
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -18,16 +18,20 @@
     <header class="h-screen flex flex-col items-center justify-center text-center px-4">
         <h1 class="text-5xl md:text-7xl font-bold mb-6">Welcome to My Project</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-2xl">
-            นี่คือหน้าเว็บไซต์ที่ถูกปรับปรุงให้ทันสมัยด้วยโครงสร้างที่สะอาดตาและดีไซน์ที่รองรับมือถือ
+
+
+            นี่คือหน้าเว็บไซต์ที่ถูกปรับปรุงให้ทันสมัยและมาพร้อมกับระบบ To-Do List
         </p>
-        <button class="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition">
-            Get Started
-        </button>
     </header>
+
+
+
 
     <!-- Todo Input Section -->
     <div class="fixed bottom-10 left-0 right-0 flex justify-center px-4">
         <div class="flex w-full max-w-md gap-2">
+
+
             <input type="text" id="todoInput" placeholder="Add a new task..." 
                    class="flex-1 px-4 py-3 rounded-full border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             <button onclick="addTodo()" 
@@ -37,9 +41,11 @@
         </div>
     </div>
 
-    <ul id="todoList" class="flex flex-col items-center mt-4 w-full max-w-md mx-auto space-y-2 px-4 pb-32"></ul>
+
+    <ul id="todoList" class="flex flex-col items-center mb-24 w-full max-w-md mx-auto space-y-2 px-4"></ul>
 
     <script>
+        document.addEventListener('DOMContentLoaded', loadTodos);
 
 
 
@@ -70,7 +76,7 @@
         }
 
 
-        function renderTodo(text, completed = false) {
+        function renderTodo(text, completed) {
             const list = document.getElementById('todoList');
             const li = document.createElement('li');
             li.className = "w-full bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center";
