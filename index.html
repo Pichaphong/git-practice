@@ -194,6 +194,27 @@
     .clear-btn:hover {
       background: #ffeaea;
     }
+
+    .search-row {
+      margin-bottom: 16px;
+    }
+
+    .search-row input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      background: #fdfdfd;
+      transition: all 0.2s;
+    }
+
+    .search-row input:focus {
+      border-color: #6c63ff;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(108, 99, 255, 0.1);
+    }
   </style>
 </head>
 <body>
@@ -204,6 +225,10 @@
     <div class="input-row">
       <input type="text" id="todoInput" placeholder="เพิ่มรายการใหม่..." />
       <button onclick="addTodo()">+</button>
+    </div>
+
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="ค้นหารายการ..." oninput="handleSearch()" />
     </div>
 
     <div class="filters">
@@ -223,6 +248,7 @@
   <script>
     let todos = JSON.parse(localStorage.getItem('todos') || '[]');
     let filter = 'all';
+    let searchQuery = '';
 
     function save() {
       localStorage.setItem('todos', JSON.stringify(todos));
@@ -231,19 +257,19 @@
     function render() {
       const list = document.getElementById('todoList');
       const filtered = todos.filter(t => {
-        if (filter === 'active') return !t.done;
-        if (filter === 'done') return t.done;
-        return true;
+        const matchesFilter = filter === 'active' ? !t.done : filter === 'done' ? t.done : true;
+        const matchesSearch = t.text.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesFilter && matchesSearch;
       });
 
       if (filtered.length === 0) {
-        list.innerHTML = '<div class="empty-state">ไม่มีรายการ</div>';
+        list.innerHTML = '<div class=\"empty-state\">ไม่พบรายการ</div>';
       } else {
         list.innerHTML = filtered.map(t => `
-          <li class="todo-item ${t.done ? 'done' : ''}">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggle(${t.id})" />
-            <span class="todo-text">${escapeHtml(t.text)}</span>
-            <button class="delete-btn" onclick="remove(${t.id})">✕</button>
+          <li class=\"todo-item ${t.done ? 'done' : ''}\">
+            <input type=\"checkbox\" ${t.done ? 'checked' : ''} onchange=\"toggle(${t.id})\" />
+            <span class=\"todo-text\">${escapeHtml(t.text)}</span>
+            <button class=\"delete-btn\" onclick=\"remove(${t.id})\">✕</button>
           </li>
         `).join('');
       }
@@ -251,6 +277,11 @@
       const remaining = todos.filter(t => !t.done).length;
       document.getElementById('countText').textContent =
         `เหลืออีก ${remaining} รายการ`;
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById('searchInput').value;
+      render();
     }
 
     function addTodo() {
