@@ -40,34 +40,56 @@
     <ul id="todoList" class="flex flex-col items-center mt-4 w-full max-w-md mx-auto space-y-2 px-4 pb-32"></ul>
 
     <script>
-        // Load todos from localStorage on startup
-        document.addEventListener('DOMContentLoaded', loadTodos);
+
+
 
         function loadTodos() {
             const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-            todos.forEach(todo => renderTodo(todo));
+
+            todos.forEach(todo => renderTodo(todo.text, todo.completed));
         }
 
         function saveTodos() {
-            const listItems = Array.from(document.querySelectorAll('#todoList span')).map(span => span.textContent);
-            localStorage.setItem('todos', JSON.stringify(listItems));
+
+
+            const todos = Array.from(document.querySelectorAll('#todoList li')).map(li => ({
+                text: li.querySelector('span').textContent,
+                completed: li.querySelector('input').checked
+            }));
+            localStorage.setItem('todos', JSON.stringify(todos));
         }
 
         function addTodo() {
             const input = document.getElementById('todoInput');
             if (input.value.trim() !== "") {
-                renderTodo(input.value);
+
+                renderTodo(input.value, false);
                 saveTodos();
                 input.value = "";
             }
         }
 
-        function renderTodo(text) {
+
+        function renderTodo(text, completed = false) {
             const list = document.getElementById('todoList');
             const li = document.createElement('li');
             li.className = "w-full bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex justify-between items-center";
-            li.innerHTML = `<span>${text}</span> <button onclick="removeTodo(this)" class="text-red-500 hover:text-red-700 font-medium">Delete</button>`;
+
+            li.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleTodo(this)" class="w-5 h-5 cursor-pointer">
+                    <span class="${completed ? 'line-through text-gray-400' : ''}">${text}</span>
+                </div>
+                <button onclick="removeTodo(this)" class="text-red-500 hover:text-red-700 font-medium">Delete</button>
+            `;
             list.appendChild(li);
+        }
+
+        function toggleTodo(checkbox) {
+            const span = checkbox.nextElementSibling;
+            span.classList.toggle('line-through');
+            span.classList.toggle('text-gray-400');
+            saveTodos();
         }
 
         function removeTodo(btn) {
